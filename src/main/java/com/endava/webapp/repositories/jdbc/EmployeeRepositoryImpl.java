@@ -47,7 +47,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     @Override
     public Employee save(Employee employee) throws SQLException{
         String query = "INSERT INTO employees VALUES (?, ?, ?, ?, ?, ?, ?)";
-        Object[] params = new Object[]{employee.getId(), employee.getFirstName(), employee.getLastMame(),
+        Object[] params = new Object[]{employee.getId(), employee.getFirstName(), employee.getFirstName(),
                 employee.getEmail(), employee.getPhoneNumber(), employee.getSalary(), employee.getDepartmentId()};
 
         if(statementGenerator.createPrepared(query, params).executeUpdate() > 0){
@@ -60,7 +60,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     public Employee update(Long id, Employee employee) throws SQLException{
         String query = "UPDATE employees SET first_name = ?, last_name = ?, email = ?, " +
                 "phone_number = ?, salary = ?, department_id = ? WHERE employee_id = ?";
-        Object[] params = new Object[]{employee.getFirstName(), employee.getLastMame(),
+        Object[] params = new Object[]{employee.getFirstName(), employee.getFirstName(),
                 employee.getEmail(), employee.getPhoneNumber(), employee.getSalary(), employee.getDepartmentId(), id};
 
         if(statementGenerator.createPrepared(query, params).executeUpdate() > 0) {
@@ -81,7 +81,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             Employee employee = new Employee();
             employee.setId(resultSet.getLong("employee_id"));
             employee.setFirstName(resultSet.getString("first_name"));
-            employee.setLastMame(resultSet.getString("last_name"));
+            employee.setLastName(resultSet.getString("last_name"));
             employee.setEmail(resultSet.getString("email"));
             employee.setPhoneNumber(resultSet.getString("phone_number"));
             employee.setSalary(resultSet.getInt("salary"));
