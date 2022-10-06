@@ -12,7 +12,7 @@ import lombok.Setter;
 public class Employee {
     private Long id;
     private String firstName;
-    private String lastMame;
+    private String lastName;
     private String email;
     private String phoneNumber;
     private Integer salary;
