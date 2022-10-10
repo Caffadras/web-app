@@ -47,7 +47,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     @Override
     public Employee save(Employee employee) throws SQLException{
         String query = "INSERT INTO employees VALUES (?, ?, ?, ?, ?, ?, ?)";
-        Object[] params = new Object[]{employee.getId(), employee.getFirstName(), employee.getFirstName(),
+        Object[] params = new Object[]{employee.getEmployeeId(), employee.getFirstName(), employee.getFirstName(),
                 employee.getEmail(), employee.getPhoneNumber(), employee.getSalary(), employee.getDepartmentId()};
 
         if(statementGenerator.createPrepared(query, params).executeUpdate() > 0){
@@ -64,7 +64,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
                 employee.getEmail(), employee.getPhoneNumber(), employee.getSalary(), employee.getDepartmentId(), id};
 
         if(statementGenerator.createPrepared(query, params).executeUpdate() > 0) {
-            employee.setId(id);
+            employee.setEmployeeId(id);
             return employee;
         }
         return null;
@@ -79,7 +79,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     private static final class EmployeeRowMapper {
         public static Employee mapRow(ResultSet resultSet) throws SQLException{
             Employee employee = new Employee();
-            employee.setId(resultSet.getLong("employee_id"));
+            employee.setEmployeeId(resultSet.getLong("employee_id"));
             employee.setFirstName(resultSet.getString("first_name"));
             employee.setLastName(resultSet.getString("last_name"));
             employee.setEmail(resultSet.getString("email"));

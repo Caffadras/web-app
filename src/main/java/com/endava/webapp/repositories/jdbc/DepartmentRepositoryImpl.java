@@ -47,7 +47,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
     @Override
     public Department save(Department department) throws SQLException{
         String query = "INSERT INTO departments VALUES (?, ?, ?)";
-        Object[] params = new Object[]{department.getId(), department.getDepartmentName(), department.getLocation()};
+        Object[] params = new Object[]{department.getDepartmentId(), department.getDepartmentName(), department.getLocation()};
 
         if (statementGenerator.createPrepared(query, params).executeUpdate() > 0){
             return department;
@@ -61,7 +61,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         Object[] params = new Object[]{department.getDepartmentName(), department.getLocation(), id};
 
         if (statementGenerator.createPrepared(query, params).executeUpdate() > 0){
-            department.setId(id);
+            department.setDepartmentId(id);
             return department;
         }
         return null;
@@ -76,7 +76,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
     private static final class DepartmentRowMapper {
         public static Department mapRow(ResultSet resultSet) throws SQLException{
             Department department = new Department();
-            department.setId(resultSet.getLong("department_id"));
+            department.setDepartmentId(resultSet.getLong("department_id"));
             department.setDepartmentName(resultSet.getString("department_name"));
             department.setLocation(resultSet.getString("location_name"));
 
