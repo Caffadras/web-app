@@ -2,12 +2,11 @@ package com.endava.webapp.repositories.jdbctemplate;
 
 import com.endava.webapp.model.Department;
 import com.endava.webapp.repositories.DepartmentRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,19 +22,24 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
     @Override
     public List<Department> findAll() {
         String query = "SELECT * FROM departments";
-        return jdbcTemplate.query(query, new DepartmentRowMapper());
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Department.class));
     }
 
     @Override
     public Optional<Department> findById(Long id) {
         String query = "SELECT * FROM departments WHERE department_id = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(query, new DepartmentRowMapper(), id));
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Department.class), id));
+        } catch(EmptyResultDataAccessException e){
+            return Optional.empty();
+        }
     }
 
     @Override
     public Department save(Department department) {
         String query = "INSERT INTO departments VALUES (?, ?, ?)";
-        if (jdbcTemplate.update(query, department.getId(), department.getDepartmentName(), department.getLocation()) > 0){
+        if (jdbcTemplate.update(query, department.getDepartmentId(), department.getDepartmentName(), department.getLocation()) > 0){
             return department;
         }
 
@@ -46,7 +50,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
     public Department update(Long id, Department department) {
         String query = "UPDATE departments SET department_name = ?, location_name = ? WHERE department_id = ?";
         if (jdbcTemplate.update(query, department.getDepartmentName(), department.getLocation(), id) > 0){
-            department.setId(id);
+            department.setDepartmentId(id);
             return department;
         }
         return null;
@@ -58,15 +62,4 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         jdbcTemplate.update(query, id);
     }
 
-
-    public static class DepartmentRowMapper implements RowMapper<Department> {
-        @Override
-        public Department mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Department department = new Department();
-            department.setId(rs.getLong("department_id"));
-            department.setDepartmentName(rs.getString("department_name"));
-            department.setLocation(rs.getString("location_name"));
-            return department;
-        }
-    }
 }
