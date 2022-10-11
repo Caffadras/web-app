@@ -10,6 +10,8 @@ CREATE TABLE employees
     CONSTRAINT emp_salary_min CHECK (salary >= 1)
 );
 
+CREATE SEQUENCE employees_seq  MINVALUE 1 MAXVALUE 99999 INCREMENT BY 10 START WITH 100;
+
 COMMENT ON TABLE employees IS 'Employees table. References with departments.';
 COMMENT ON COLUMN employees.employee_id IS 'Primary key of employees table.';
 COMMENT ON COLUMN employees.first_name IS 'First name of the employee. A not null column.';
