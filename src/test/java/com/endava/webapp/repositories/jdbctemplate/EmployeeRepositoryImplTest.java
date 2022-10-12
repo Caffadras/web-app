@@ -61,14 +61,12 @@ class EmployeeRepositoryImplTest {
         assertEquals(employeeRepository.save(employee1), employee1);
     }
 
-    //todo: add ID-based equals method to Department to pass the test
     @Test
     @Order(4)
     void shouldReturnCorrectOptional_WhenFindByExistingId() {
         assertEquals(employeeRepository.findById(employee1.getEmployeeId()).get(), employee1);
     }
 
-    //todo: add ID-based equals method to Department to pass the test
     @Test
     @Order(5)
     void shouldReturnCorrectList_WhenCalledFindAll() {
