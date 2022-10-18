@@ -5,22 +5,22 @@ import com.endava.webapp.model.Department;
 import com.endava.webapp.repositories.springdata.DepartmentRepository;
 import com.endava.webapp.services.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
-
     private final DepartmentRepository departmentRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<Department> findAll() {
-        return departmentRepository.findAll();
+    public Page<Department> findAll(Pageable pageable) {
+        return departmentRepository.findAll(pageable);
     }
 
     @Override

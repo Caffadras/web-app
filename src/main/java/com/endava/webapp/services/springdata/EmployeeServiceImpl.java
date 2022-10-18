@@ -5,22 +5,22 @@ import com.endava.webapp.model.Employee;
 import com.endava.webapp.repositories.springdata.EmployeeRepository;
 import com.endava.webapp.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
-
     private final EmployeeRepository employeeRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<Employee> findAll() {
-        return employeeRepository.findAll();
+    public Page<Employee> findAll(Pageable pageable) {
+        return employeeRepository.findAll(pageable);
     }
 
     @Override

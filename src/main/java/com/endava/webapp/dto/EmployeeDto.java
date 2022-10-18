@@ -2,6 +2,7 @@ package com.endava.webapp.dto;
 
 import com.endava.webapp.model.Department;
 import com.endava.webapp.model.Employee;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EmployeeDto implements Serializable {
     private String firstName;
     private String lastName;
