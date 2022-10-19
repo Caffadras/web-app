@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,9 +33,11 @@ public class Department {
     private Long departmentId;
 
     @Column(name = "department_name")
+    @NotBlank
     private String departmentName;
 
     @Column(name = "location_name")
+    @NotBlank
     private String locationName;
 
     @OneToMany(mappedBy = "department")

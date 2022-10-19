@@ -1,8 +1,10 @@
 package com.endava.webapp.controllers;
 
+import com.endava.webapp.exceptions.DepartmentsConstraintViolationException;
 import com.endava.webapp.exceptions.ErrorResponse;
 import com.endava.webapp.exceptions.InvalidForeignKeyException;
 import com.endava.webapp.exceptions.NotFoundException;
+import com.endava.webapp.exceptions.UniqueConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
     public static final String OBJECT_NOT_FOUND = "Object not found";
     public static final String INVALID_FOREIGN_KEY = "Invalid foreign key";
+    public static final String DEPARTMENTS_CONSTRAINT_VIOLATION = "Departments constraint violation";
+    public static final String UNIQUE_CONSTRAINT_VIOLATION = "Unique constraint violation";
 
     @ResponseBody
     @ExceptionHandler(NotFoundException.class)
@@ -35,13 +39,24 @@ public class GlobalExceptionHandler {
                         e.getMessage(), request.getServletPath()));
     }
 
+    @ResponseBody
+    @ExceptionHandler(DepartmentsConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> departmentsConstraintViolationHandler(HttpServletRequest request,
+                                                                               DepartmentsConstraintViolationException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), DEPARTMENTS_CONSTRAINT_VIOLATION,
+                        e.getMessage(), request.getServletPath()));
+    }
 
+    @ResponseBody
+    @ExceptionHandler(UniqueConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> uniqueConstraintViolationHandler(HttpServletRequest request,
+                                                                               UniqueConstraintViolationException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), UNIQUE_CONSTRAINT_VIOLATION,
+                        e.getMessage(), request.getServletPath()));
+    }
 
-    //Exposing server error messages like this is not a great idea. Added just for the convenience.
-//    @ResponseBody
-//    @ExceptionHandler(SQLException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public String sqlExceptionHandler(SQLException e){
-//        return e.getMessage();
-//    }
 }

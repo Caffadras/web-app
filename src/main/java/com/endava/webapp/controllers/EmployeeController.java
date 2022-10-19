@@ -4,11 +4,13 @@ import com.endava.webapp.EmployeeResourceAssembler;
 import com.endava.webapp.dto.EmployeeDto;
 import com.endava.webapp.exceptions.InvalidForeignKeyException;
 import com.endava.webapp.exceptions.NotFoundException;
+import com.endava.webapp.exceptions.UniqueConstraintViolationException;
 import com.endava.webapp.model.Department;
 import com.endava.webapp.model.Employee;
 import com.endava.webapp.services.DepartmentService;
 import com.endava.webapp.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/employees")
@@ -50,15 +54,23 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EntityModel<EmployeeDto> save(@RequestBody EmployeeDto employeeDto){
-        return employeeResourceAssembler.toModel(
-                employeeService.save(convertFromEmployeeDto(employeeDto)));
+    public EntityModel<EmployeeDto> save(@Valid @RequestBody EmployeeDto employeeDto){
+        try{
+            return employeeResourceAssembler.toModel(
+                    employeeService.save(convertFromEmployeeDto(employeeDto)));
+        }catch (DataIntegrityViolationException e){
+            throw new UniqueConstraintViolationException("Employee email and phone must be unique");
+        }
     }
 
     @PutMapping("/{id}")
-    public EntityModel<EmployeeDto> update(@PathVariable Long id, @RequestBody EmployeeDto employeeDto){
-        return employeeResourceAssembler.toModel(
-                employeeService.update(id, convertFromEmployeeDto(employeeDto)));
+    public EntityModel<EmployeeDto> update(@PathVariable Long id, @Valid @RequestBody EmployeeDto employeeDto){
+        try{
+            return employeeResourceAssembler.toModel(
+                    employeeService.update(id, convertFromEmployeeDto(employeeDto)));
+        }catch (DataIntegrityViolationException e){
+            throw new UniqueConstraintViolationException("Employee email and phone must be unique");
+        }
     }
 
     @DeleteMapping("/{id}")

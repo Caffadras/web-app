@@ -1,10 +1,12 @@
 package com.endava.webapp.controllers;
 
 import com.endava.webapp.DepartmentResourceAssembler;
+import com.endava.webapp.exceptions.DepartmentsConstraintViolationException;
 import com.endava.webapp.exceptions.NotFoundException;
 import com.endava.webapp.model.Department;
 import com.endava.webapp.services.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/departments")
@@ -44,18 +48,22 @@ public class DepartmentsController {
     }
 
     @PostMapping
-    public EntityModel<Department> save(@RequestBody Department department){
+    public EntityModel<Department> save(@Valid  @RequestBody Department department){
         return resourceAssembler.toModel(departmentService.save(department));
     }
 
     @PutMapping("/{id}")
-    public EntityModel<Department> update(@PathVariable Long id, @RequestBody Department department){
+    public EntityModel<Department> update(@PathVariable Long id, @Valid @RequestBody Department department){
         return resourceAssembler.toModel(departmentService.update(id, department));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id){
-        departmentService.deleteById(id);
+        try {
+            departmentService.deleteById(id);
+        } catch (DataIntegrityViolationException e){
+            throw new DepartmentsConstraintViolationException("Cannot delete department while it still has employees");
+        }
     }
 }
