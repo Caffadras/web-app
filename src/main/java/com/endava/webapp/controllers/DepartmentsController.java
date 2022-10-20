@@ -7,6 +7,7 @@ import com.endava.webapp.model.Department;
 import com.endava.webapp.services.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -64,6 +65,8 @@ public class DepartmentsController {
             departmentService.deleteById(id);
         } catch (DataIntegrityViolationException e){
             throw new DepartmentsConstraintViolationException("Cannot delete department while it still has employees");
+        } catch (EmptyResultDataAccessException e){
+            throw new NotFoundException("Department with id: " + id + " was not found.");
         }
     }
 }
